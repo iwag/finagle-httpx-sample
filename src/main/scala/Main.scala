@@ -2,21 +2,21 @@ package com.github.iwag
 
 import java.net.InetSocketAddress
 
-import com.twitter.finagle.httpx.{Response, Request, HttpMuxer, Version, Status, Method, RequestBuilder}
+import com.twitter.finagle.http.{Response, Request, HttpMuxer, Status, Method, RequestBuilder}
+import com.twitter.finagle.tracing.Trace
 import com.twitter.server.TwitterServer
-import com.twitter.finagle.{Httpx, Service}
+import com.twitter.finagle.{SimpleFilter, Http, Service}
 import com.twitter.util.{Future, Await}
-import com.twitter.io.Buf
 import com.twitter.logging.Logger
 
 class HTTPServiceImpl(log:Logger) extends Service[Request, Response] {
-  val client = Httpx.newService("requestb.in:80")
+  val client = Http.newService("requestb.in:80")
   override def apply(request: Request): Future[Response] = Future.value{
     val res = Response()
     request.method match {
       case Method.Get => res.setContentString("wai!wai!")
       case Method.Post =>
-        val newReq = RequestBuilder().setHeader("Content-Type","application/json").url("http://requestb.in/w9kt8pw9").buildPost(request.content)
+        val newReq = RequestBuilder().setHeader("Content-Type","application/json").url("http://requestb.in/16hj4hp1").buildPost(request.content)
         log.info(newReq.toString())
         val f = client(newReq) onSuccess { res =>
           log.info(res.toString)
@@ -33,8 +33,10 @@ object Main extends TwitterServer {
 
   def main() {
     val httpMux = new HttpMuxer().withHandler("/", new HTTPServiceImpl(log))
+    val http = new HTTPServiceImpl(log)
+    val httpMux = new HttpMuxer().withHandler("/", requestIdFilter andThen http)
 
-    val httpServer = Httpx.serve(httpAddr(), httpMux)
+    val httpServer = Http.serve(httpAddr(), httpMux)
 
     onExit {
       adminHttpServer.close()
