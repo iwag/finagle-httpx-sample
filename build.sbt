@@ -1,4 +1,4 @@
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.8"
 
 organization := "com.github.iwag"
 
