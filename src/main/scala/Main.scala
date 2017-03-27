@@ -16,7 +16,7 @@ class HTTPServiceImpl(log:Logger) extends Service[Request, Response] {
     request.method match {
       case Method.Get => res.setContentString("wai!wai!")
       case Method.Post =>
-        val newReq = RequestBuilder().setHeader("Content-Type","application/json").url("http://requestb.in/16hj4hp1").buildPost(request.content)
+        val newReq = RequestBuilder().setHeader("Content-Type","application/json").url("http://requestb.in/").buildPost(request.content)
         log.info(newReq.toString())
         val f = client(newReq) onSuccess { res =>
           log.info(res.toString)
@@ -33,8 +33,6 @@ object Main extends TwitterServer {
 
   def main() {
     val httpMux = new HttpMuxer().withHandler("/", new HTTPServiceImpl(log))
-    val http = new HTTPServiceImpl(log)
-    val httpMux = new HttpMuxer().withHandler("/", requestIdFilter andThen http)
 
     val httpServer = Http.serve(httpAddr(), httpMux)
 
