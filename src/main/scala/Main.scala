@@ -8,6 +8,8 @@ import com.twitter.server.TwitterServer
 import com.twitter.finagle.{SimpleFilter, Http, Service}
 import com.twitter.util.{Future, Await}
 import com.twitter.logging.Logger
+import com.twitter.server.logging.{Logging => JDK14Logging}
+
 
 class HTTPServiceImpl(log:Logger) extends Service[Request, Response] {
   val client = Http.newService("requestb.in:80")
@@ -28,7 +30,7 @@ class HTTPServiceImpl(log:Logger) extends Service[Request, Response] {
   }
 }
 
-object Main extends TwitterServer {
+object Main extends TwitterServer with JDK14Logging {
   val httpAddr = flag("http", new InetSocketAddress(40080), "HTTP bind address")
 
   def main() {
