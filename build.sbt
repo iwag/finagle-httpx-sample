@@ -1,14 +1,16 @@
-scalaVersion := "2.11.9"
+scalaVersion := "2.12.8"
 
 organization := "com.github.iwag"
 
 name := "sample"
 
+val finagleVersion = "19.5.0"
+
 libraryDependencies ++= Seq(
-  "com.twitter"    %% "twitter-server"        % "18.11.0",
-  "com.twitter" %% "twitter-server-slf4j-jdk14" % "18.11.0",
-  "com.twitter"    %% "finagle-http"         % "18.11.0",
-  "org.scalatest"  %  "scalatest_2.10"        % "2.2.1" % "test"
+  "com.twitter"    %% "twitter-server"        % finagleVersion,
+  "com.twitter" %% "twitter-server-slf4j-jdk14" % finagleVersion,
+  "com.twitter"    %% "finagle-http"         % finagleVersion,
+  "org.scalatest"  %%  "scalatest"        % "3.0.0" % "test"
 )
 
 
